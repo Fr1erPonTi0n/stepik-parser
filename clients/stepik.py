@@ -7,7 +7,6 @@ from models.stepik import (
     SectionsResponse,
     Step,
     StepResponse,
-    SubmissionResponse,
     UnitsResponse,
 )
 from oauth import API_URL, get_session
@@ -52,8 +51,12 @@ class StepikClient:
 
     def get_solution_code(self, step_id: int) -> str | None:
         resp = self.session.get(f"{API_URL}/submissions?step={step_id}")
-        submission_resp = SubmissionResponse.model_validate(resp.json())
-        for submission in reversed(submission_resp.submissions):
-            if submission.status == "correct":
-                return submission.reply.code
+        data = resp.json()
+        for submission in reversed(data['submissions']):
+            if submission.get('status') == 'correct':
+                reply = submission.get('reply', {})
+                if 'solve_sql' in reply:
+                    return reply['solve_sql'].strip()
+                if 'code' in reply:
+                    return reply['code'].strip()
         return None
