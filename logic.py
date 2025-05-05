@@ -73,7 +73,8 @@ def get_code_solutions(lesson: Lesson) -> list[CodeSolution]:
     code_solutions = []
     for step_id in lesson.steps:
         step = stepik.get_step(id=step_id)
-        if step.block.name != "code":
+
+        if step.block.name not in ["code", "sql"]:
             continue
 
         code_problem = parse_block_text(step.block.text)
@@ -96,9 +97,3 @@ def get_code_solutions(lesson: Lesson) -> list[CodeSolution]:
             )
         )
     return code_solutions
-
-
-if __name__ == "__main__":
-    code_solutions = get_code_solutions(lesson_id=265122)
-    print(*code_solutions, sep="\n\n")
-    print(len(code_solutions))
