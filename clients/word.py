@@ -7,9 +7,9 @@ from docx.shared import Mm
 
 
 class WordClient:
-    def __init__(self):
-        self.doc_name = 'Отчёт'
-        self.doc = Document()
+        def __init__(self, doc_path: str):
+        self.doc_name = doc_path
+        self.doc = Document(docx=doc_path)
 
     def add_heading2(self, title: str, heading_no: int) -> None:
         self.doc.add_heading(
