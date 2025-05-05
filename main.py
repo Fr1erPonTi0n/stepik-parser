@@ -7,9 +7,6 @@ from clients.stepik import StepikClient
 from clients.word import WordClient
 from logic import IMGS_PATH, get_code_solutions
 
-TEMPLATE_PATH = "assets/template.docx"
-PYTHON_COURSE_ID = 58852
-
 logger = logging.getLogger(__name__)
 
 coloredlogs.install(level="DEBUG")
@@ -19,12 +16,13 @@ def main():
     logger.info("Start")
     os.makedirs(IMGS_PATH, exist_ok=True)
 
-    doc = WordClient(doc_path=TEMPLATE_PATH)
+    doc = WordClient()
     stepik = StepikClient()
 
-    course_id = PYTHON_COURSE_ID
-    section_no = int(input("Введите номер раздела (номер лабы): "))
-    doc_name = ""
+    course_id = int(input('Введите id курса: '))
+    section_no = int(input("Введите номер раздела: "))
+    doc_name = input('Введите названия файла (можно не писать): ')
+
     if not doc_name:
         section = stepik.get_section(stepik.get_section_id(course_id, section_no))
         doc_name = f"{section_no}-{section.title.strip().replace(' ', '-')}"
@@ -47,6 +45,7 @@ def main():
                 img_path=solution.img_path,
             )
             current_no += 1
+
         doc.add_page_break()
         heading_no += 1
 
