@@ -16,7 +16,7 @@ def main():
     logger.info("Start")
     os.makedirs(IMGS_PATH, exist_ok=True)
 
-    doc = WordClient()
+    doc = WordClient(doc_path="assets/template.docx")
     stepik = StepikClient()
 
     course_id = int(input('Введите id курса: '))
