@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from typing import Union
+from pydantic import BaseModel, RootModel
 
 
 class Lesson(BaseModel):
@@ -32,9 +33,17 @@ class CodeProblem(BaseModel):
     description: list[str]
 
 
-class Reply(BaseModel):
+class CodeReply(BaseModel):
     code: str
     language: str
+
+
+class SqlReply(BaseModel):
+    solve_sql: str
+
+
+class Reply(RootModel):
+    root: Union[CodeReply, SqlReply, dict]
 
 
 class Submission(BaseModel):
