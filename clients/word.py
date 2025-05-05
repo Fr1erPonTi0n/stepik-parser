@@ -1,17 +1,19 @@
 import os
 
+from PIL import Image
 from docx import Document
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
+from docx.shared import Mm
 
 
 class WordClient:
-    def __init__(self, doc_path: str):
-        self.doc_name = doc_path
-        self.doc = Document(docx=doc_path)
+    def __init__(self):
+        self.doc_name = 'Отчёт'
+        self.doc = Document()
 
     def add_heading2(self, title: str, heading_no: int) -> None:
         self.doc.add_heading(
-            f"2.{heading_no}. Решения задач на тему «{title}»",
+            f"{heading_no}. Решения задач на тему «{title}»",
             level=2,
         )
         self.doc.add_paragraph()
@@ -21,12 +23,28 @@ class WordClient:
         self.doc.add_paragraph(f"{descr}")
         self.doc.add_paragraph()
 
-        pic_p = self.doc.add_paragraph()
-        pic_p.add_run().add_picture(img_path)
-        pic_p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+        if os.path.exists(img_path):
+            img = Image.open(img_path)
+            width_px, height_px = img.size
 
-        label = self.doc.add_paragraph(f"Рисунок 2.{no} — решение задачи «{title}».")
-        label.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+            max_width_mm = 140
+            max_width_px = int(max_width_mm * 96 / 25.4)
+
+            if width_px > max_width_px:
+                ratio = max_width_px / width_px
+                new_height = int(height_px * ratio)
+                img = img.resize((max_width_px, new_height))
+                img.save(img_path)
+
+            pic_p = self.doc.add_paragraph()
+            run = pic_p.add_run()
+            run.add_picture(img_path, width=Mm(max_width_mm))
+            pic_p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+
+            label = self.doc.add_paragraph(f"Рисунок {no} — решение задачи «{title}».")
+            label.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+        else:
+            self.doc.add_paragraph("[Изображение не найдено]")
 
         self.doc.add_paragraph()
 
