@@ -7,7 +7,7 @@ from docx.shared import Mm
 
 
 class WordClient:
-        def __init__(self, doc_path: str):
+    def __init__(self, doc_path: str):
         self.doc_name = doc_path
         self.doc = Document(docx=doc_path)
 
