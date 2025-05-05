@@ -2,7 +2,7 @@ import os
 
 from PIL import Image
 from docx import Document
-from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
+from docx.enum.text import WD_PARAGRAPH_ALIGNMENT, WD_ALIGN_PARAGRAPH
 from docx.shared import Mm
 
 
@@ -20,7 +20,8 @@ class WordClient:
 
     def add_solution(self, no: int, title: str, descr: str, img_path: str) -> None:
         self.doc.add_paragraph(f"«{title}».")
-        self.doc.add_paragraph(f"{descr}")
+        paragraph = self.doc.add_paragraph(f"{descr}")
+        paragraph.alignment = WD_ALIGN_PARAGRAPH.LEFT
         self.doc.add_paragraph()
 
         if os.path.exists(img_path):
